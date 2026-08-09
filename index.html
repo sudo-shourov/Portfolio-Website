@@ -10,7 +10,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
 
@@ -281,7 +284,30 @@
           <div class="window-title">📄 Viewer — Shourov_Resume.pdf</div>
         </div>
         <div class="window-body pdf-body">
-          <iframe src="resume.pdf" class="pdf-frame" title="Resume PDF"></iframe>
+          <div class="pdf-toolbar">
+            <button id="pdfFitWidth" class="pdf-btn pdf-btn-text" title="Fit width" aria-label="Fit width">⤢ fit</button>
+            <button id="pdfZoomOut" class="pdf-btn" title="Zoom out (-)" aria-label="Zoom out">−</button>
+            <span id="pdfZoomInfo" class="pdf-page-info">–%</span>
+            <button id="pdfZoomIn" class="pdf-btn" title="Zoom in (+)" aria-label="Zoom in">+</button>
+            <div class="pdf-toolbar-spacer"></div>
+            <button id="pdfPrev" class="pdf-btn" title="Previous page (←)" aria-label="Previous page">‹</button>
+            <span id="pdfPageInfo" class="pdf-page-info">– / –</span>
+            <button id="pdfNext" class="pdf-btn" title="Next page (→)" aria-label="Next page">›</button>
+            <div class="pdf-toolbar-spacer"></div>
+            <a href="resume.pdf" class="pdf-btn" download="Shourov_Resume.pdf" title="Download" aria-label="Download PDF">⇩</a>
+          </div>
+          <div class="pdf-canvas-wrap">
+            <canvas id="pdfCanvas"></canvas>
+            <div id="pdfLoading" class="pdf-status">
+              <div class="pdf-spinner"></div>
+              <span>loading resume.pdf ...</span>
+            </div>
+            <div id="pdfError" class="pdf-status pdf-status-err" hidden>
+              <span>couldn't render the PDF</span>
+              <span class="pdf-status-detail"></span>
+              <a href="resume.pdf" target="_blank" rel="noopener">try opening it directly</a>
+            </div>
+          </div>
           <div class="resize-handle"></div>
         </div>
       </div>
@@ -309,6 +335,22 @@
 
   </div>
 
-  <script src="script.js"></script>
+  <!-- Load order matters: core.js defines the shared window-manager
+       globals (openApp, closeApp, blip, running, root, ...) that every
+       file after it relies on. -->
+  <script src="js/core.js"></script>
+  <script src="js/boot.js"></script>
+  <script src="js/controls.js"></script>
+  <script src="js/bindings.js"></script>
+  <script src="js/clock.js"></script>
+  <script src="js/contact.js"></script>
+  <script src="js/buddy.js"></script>
+  <script src="js/terminal.js"></script>
+  <script src="js/main.js"></script>
+
+  <!-- pdf.js renders the resume onto a canvas so it can sit inside our
+       own themed toolbar instead of the browser's default PDF frame. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="js/pdf-viewer.js"></script>
 </body>
 </html>

@@ -1,0 +1,95 @@
+/* =========================================================
+   BASE — design tokens, theme colors, global reset
+   ========================================================= */
+
+:root {
+  --font-display: 'Fredoka', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --menubar-h: 44px;
+  --taskbar-h: 52px;
+}
+
+/* ---------- CAFÉ THEME (LIGHT MODE) ---------- */
+[data-theme="light"] {
+  --bg: #FDF8F2;
+  --bg-2: #F4EBE1;
+  --panel: #FFFDF9;
+  --panel-2: #F8F1E8;
+  --ink: #3D2314;
+  --ink-soft: #7A5C4A;
+  --line: #E8D8C8;
+  --teal: #C68B59;
+  --teal-ink: #5C3D2E;
+  --coral: #D97736;
+  --gold: #E5A93C;
+  --violet: #8C5A3C;
+  --shadow: 0 14px 34px -12px rgba(61, 35, 20, 0.18);
+  --scrim: rgba(61, 35, 20, 0.25);
+}
+
+/* ---------- DARK ESPRESSO THEME (DARK MODE) ---------- */
+[data-theme="dark"] {
+  --bg: #0E1620;
+  --bg-2: #141F2A;
+  --panel: #1B2733;
+  --panel-2: #20303D;
+  --ink: #E7F1EF;
+  --ink-soft: #9FB3B8;
+  --line: #2B3B47;
+  --teal: #3FD8C3;
+  --teal-ink: #9FF3E6;
+  --coral: #FF88A6;
+  --gold: #FFD57A;
+  --violet: #A99BFF;
+  --shadow: 0 16px 38px -12px rgba(0, 0, 0, .6);
+  --scrim: rgba(0, 0, 0, .5);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: var(--teal-ink);
+}
+
+:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: #E8D8C8;
+  color: #3D2314;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}

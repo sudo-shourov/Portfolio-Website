@@ -1,0 +1,353 @@
+/* =========================================================
+   LAYOUT — boot screen, desktop shell, menubar, icons,
+   window chrome (structure only, not per-app content),
+   taskbar
+   ========================================================= */
+
+/* ---------- BOOT SCREEN ---------- */
+#boot {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-family: var(--font-mono);
+  color: var(--teal-ink);
+  cursor: pointer;
+}
+
+#boot .boot-lines {
+  font-size: 14px;
+  line-height: 1.9;
+  text-align: left;
+  min-width: 260px;
+}
+
+#boot .boot-lines span {
+  opacity: 0;
+  display: block;
+  animation: bootIn .25s forwards;
+}
+
+#boot .boot-lines span:nth-child(1) { animation-delay: .1s; }
+#boot .boot-lines span:nth-child(2) { animation-delay: .45s; }
+#boot .boot-lines span:nth-child(3) { animation-delay: .8s; }
+#boot .boot-lines span:nth-child(4) { animation-delay: 1.15s; color: var(--ink); font-weight: 700; }
+
+#boot .boot-hint {
+  margin-top: 22px;
+  font-size: 11px;
+  opacity: .5;
+  letter-spacing: .04em;
+}
+
+@keyframes bootIn { to { opacity: 1; } }
+
+#boot.hide { animation: bootOut .35s forwards; }
+@keyframes bootOut { to { opacity: 0; visibility: hidden; } }
+
+/* ---------- DESKTOP ---------- */
+#desktop {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background:
+    radial-gradient(560px 420px at 88% 14%, color-mix(in srgb, var(--coral) 18%, transparent), transparent 60%),
+    radial-gradient(620px 480px at 8% 90%, color-mix(in srgb, var(--teal) 15%, transparent), transparent 60%),
+    linear-gradient(var(--bg-2), var(--bg));
+  background-attachment: fixed;
+}
+
+#desktop::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .4;
+  background-image: radial-gradient(color-mix(in srgb, var(--ink) 12%, transparent) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+
+/* ---------- MENU BAR ---------- */
+.menubar {
+  height: var(--menubar-h);
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  background: color-mix(in srgb, var(--panel) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.menubar .brand {
+  font-weight: 700;
+  letter-spacing: .02em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.menubar .brand .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--coral);
+}
+
+.menubar .controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.iconbtn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 15px;
+  transition: transform .15s ease, background .15s ease;
+}
+
+.iconbtn:hover {
+  background: var(--panel);
+  transform: translateY(-1px);
+}
+
+.iconbtn:active {
+  transform: translateY(0) scale(.94);
+}
+
+/* ---------- DESKTOP ICONS ---------- */
+.icons-layer {
+  position: absolute;
+  top: calc(var(--menubar-h) + 14px);
+  left: 14px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 92px;
+}
+
+.app-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 8px 4px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.app-icon:hover, .app-icon:focus-visible {
+  background: color-mix(in srgb, var(--panel) 65%, transparent);
+  border-color: var(--line);
+}
+
+.app-icon .glyph {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.app-icon .label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+/* ---------- WINDOWS (chrome / shell) ---------- */
+.windows-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.window {
+  position: absolute;
+  top: 50px;
+  left: 130px;
+  display: none;
+  flex-direction: column;
+  width: 460px;
+  height: 420px;
+  min-width: 280px;
+  min-height: 200px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100% - var(--menubar-h) - var(--taskbar-h) - 24px);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  pointer-events: auto;
+  will-change: transform, width, height;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.window.open {
+  display: flex;
+}
+
+.window-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--panel-2);
+  border-bottom: 1px solid var(--line);
+  cursor: grab;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 700;
+  user-select: none;
+  touch-action: none;
+  flex: none;
+}
+
+.window-titlebar:active {
+  cursor: grabbing;
+}
+
+.traffic {
+  display: flex;
+  gap: 6px;
+}
+
+.traffic button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.traffic .t-close { background: var(--coral); }
+.traffic .t-min { background: var(--gold); }
+
+.window-title {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.window-body {
+  flex: 1;
+  padding: 16px 18px 18px;
+  overflow-y: auto;
+  font-size: 14.5px;
+  line-height: 1.55;
+  position: relative;
+}
+
+.window-body h2 { font-family: var(--font-display); font-size: 20px; margin: 0 0 4px; }
+.window-body h3 { font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin: 18px 0 8px; }
+.window-body p { margin: 0 0 10px; }
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+}
+
+.resize-handle {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 16px;
+  height: 16px;
+  cursor: se-resize;
+  z-index: 10;
+  touch-action: none;
+}
+
+.resize-handle::after {
+  content: '';
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 6px;
+  height: 6px;
+  border-right: 2px solid var(--ink-soft);
+  border-bottom: 2px solid var(--ink-soft);
+  opacity: 0.5;
+  transition: opacity 0.15s ease;
+}
+
+.resize-handle:hover::after {
+  opacity: 1;
+}
+
+/* ---------- TASKBAR ---------- */
+.taskbar {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: var(--taskbar-h);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  background: color-mix(in srgb, var(--panel) 90%, transparent);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--line);
+}
+
+.running-tabs { flex: 1; display: flex; gap: 6px; overflow-x: auto; height: 100%; align-items: center; }
+.run-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.run-tab.active { background: var(--coral); color: #FFFDF9; border-color: transparent; font-weight: 700; }
+.systray { display: flex; align-items: center; gap: 8px; flex: none; }
+.clock { font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-soft); min-width: 64px; text-align: right; }

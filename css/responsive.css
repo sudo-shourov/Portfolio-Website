@@ -1,0 +1,37 @@
+/* =========================================================
+   RESPONSIVE — mobile layout overrides
+   ========================================================= */
+
+@media (max-width: 760px) {
+  #desktop { display: flex; flex-direction: column; overflow-y: auto; }
+
+  .icons-layer {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: auto;
+    padding: 10px 8px 4px;
+    gap: 4px;
+  }
+
+  .app-icon { width: 78px; }
+
+  .windows-layer { position: static; flex: 1; }
+
+  .window {
+    position: fixed !important;
+    inset: var(--menubar-h) 0 var(--taskbar-h) 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    border-radius: 0 !important;
+    border-left: none;
+    border-right: none;
+    transform: none !important;
+  }
+
+  .window-titlebar { cursor: default; }
+  .resize-handle { display: none; }
+  #buddy { left: 12px; }
+}
