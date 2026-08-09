@@ -1,49 +1,85 @@
-# shourov.os — Shirajul Alam Shourov's portfolio
+# 🖥️ Portfolio OS
 
-Three files, each with one job. Keep them in the same folder — `index.html` loads the other two by relative path.
+An interactive, retro-modern Desktop OS interface built for web portfolios. Features **60+ FPS GPU-accelerated window management**, responsive mobile layouts, dynamic themes, and a built-in terminal.
 
-```
-index.html   → structure & content (your name, bio, projects, links)
-style.css    → all colors, fonts, spacing, layout
-script.js    → window dragging, terminal, theme/sound toggles, the buddy
-```
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=black)
 
-## What to edit, and where
+---
 
-**Your info** → `index.html`. Search the file for `EDIT:` — every one marks a
-spot meant for your own content: project links, gallery images, and the
-YouTube link (left as a placeholder since no channel URL was given yet — it's
-in the Links window). LinkedIn, GitHub, Instagram, Facebook, and your email
-are already wired up.
+## ✨ Features
 
-**Colors & fonts** → top of `style.css`, inside `:root`, `[data-theme="light"]`,
-and `[data-theme="dark"]`. Change the hex values there and the whole site
-updates — nothing else in the file needs to change.
+* 🚀 **Fluid Window Management**: Smooth, high-FPS window dragging and resizing powered by requestAnimationFrame and 3D GPU transforms (translate3d).
+* 🌓 **Light/Dark Themes**: One-click dynamic color palette switching using CSS variables.
+* ⌨️ **Interactive Terminal**: Fully working command line app supporting custom commands (help, about, work, theme, sudo, clear, etc.).
+* 📱 **Fully Responsive**: Automatically adapts from a windowed desktop OS on large screens to a full-width mobile view on smaller devices.
+* 🔊 **Audio Effects**: Subtle, optional Web Audio API retro sound effects.
+* 🐥 **Desktop Buddy**: Interactive animated mascot with random speech bubbles and easter eggs.
+* ⚡ **Zero Dependencies**: Pure HTML5, CSS3, and modern Vanilla JavaScript—no heavy frameworks or external bundlers required.
 
-```css
-[data-theme="light"]{
-  --teal:#1FA895;   /* accent color */
-  --coral:#FF6F91;  /* accent color */
-  --gold:#E7A400;   /* accent color */
-  ...
+---
+
+## 🛠️ Project Structure
+
+.
+├── index.html       # OS layout, windows, taskbar, and initial DOM structure
+├── style.css        # Core design system, CSS variables, and layout styles
+└── script.js       # Window manager, event listeners, clock, and terminal logic
+
+---
+
+## 🚀 Quick Start
+
+Since this project requires no build steps or dependencies, running it locally is instant:
+
+1. Clone the repository:
+   git clone https://github.com/your-username/portfolio-os.git
+   cd portfolio-os
+
+2. Open in browser:
+   - Double-click index.html to open it in any modern browser.
+   - Or use Live Server in VS Code to run it on a local development server.
+
+---
+
+## 🎨 Customization
+
+### Changing Personal Details
+Update your bio, name, links, and avatar image directly inside the about section of index.html:
+
+<div class="window" data-app="about">
+  <div class="about-head">
+    <div class="avatar">
+      <img src="your-photo.jpg" alt="Your Name">
+    </div>
+    <div>
+      <h2 class="name">Your Name</h2>
+      <p class="role">Software Engineer & Designer</p>
+    </div>
+  </div>
+</div>
+
+### Adding Terminal Commands
+Extend or customize available shell commands in script.js inside the runCommand() switch block:
+
+switch(cmd) {
+  case 'custom':
+    printLine('This is a custom terminal response!');
+    break;
 }
-```
 
-To swap a font, change the Google Fonts `<link>` near the top of `index.html`
-and the matching `--font-display` / `--font-mono` / `--font-body` variables
-in `style.css`.
+---
 
-**Behavior** → `script.js`. This is where the window manager, the terminal
-commands, and the desktop buddy live. You shouldn't need to touch it just to
-personalize the site — only if you want to change how something *works*
-(e.g. add a new terminal command, or a new app window).
+## 💻 Tech Stack
 
-## Previewing it
+* HTML5: Semantic markup for layout, windows, and accessibility tags.
+* CSS3: CSS Custom Properties (variables), Flexbox, CSS Grid, and GPU hint optimizations (will-change).
+* JavaScript (ES6+): Pointer Capture events, Web Audio API, and requestAnimationFrame render loops.
 
-Just open `index.html` in a browser — no build step, no server required.
+---
 
-## Hosting it
+## 📄 License
 
-Upload all three files (keeping them in the same folder) to any static host:
-GitHub Pages, Netlify, Vercel, Cloudflare Pages, etc. all work with zero
-configuration since this is plain HTML/CSS/JS.
+Distributed under the MIT License. See LICENSE for more information.
