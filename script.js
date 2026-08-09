@@ -1,5 +1,5 @@
 /* ======================================================
-   PORTFOLIO OS TEMPLATE — COMPLETE SCRIPT.JS
+   PORTFOLIO OS TEMPLATE — FULL JAVASCRIPT
    ====================================================== */
 (function(){
   'use strict';
@@ -34,7 +34,7 @@
     themeBtn.textContent = root.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
   }
 
-  /* Sound enabled by default */
+  /* Sound ON by default */
   var soundOn = true;
   var soundBtn = document.getElementById('soundToggle');
   var audioCtx = null;
@@ -67,7 +67,7 @@
     });
   }
 
-  /* ---------------- window manager (fluid GPU + boundary fixes) ---------------- */
+  /* ---------------- window manager (fluid GPU + boundaries) ---------------- */
   var windowsLayer = document.getElementById('windowsLayer');
   var runningTabs = document.getElementById('runningTabs');
   var desktopEl = document.getElementById('desktop');
@@ -109,9 +109,10 @@
       tab.addEventListener('click', function(){ toggleFromTaskbar(appId); });
       runningTabs.appendChild(tab);
 
-      // Default positioning safely below the 44px menubar
-      var initialLeft = parseInt(el.style.left, 10) || 120;
-      var initialTop = 60; // Forced top margin so menubar never covers titlebar
+      // Default spawn positioning clears top menubar safely
+      var initialLeft = 130;
+      var initialTop = 60; // Forced 60px margin
+
       el.style.left = '0px';
       el.style.top = '0px';
 
@@ -168,7 +169,7 @@
     btn.addEventListener('click', function(){ openApp(btn.getAttribute('data-app')); });
   });
 
-  /* Attach controls and resize handle */
+  /* Append resize handle */
   windowsLayer.querySelectorAll('.window').forEach(function(win){
     var appId = win.getAttribute('data-app');
     win.addEventListener('mousedown', function(){ focusApp(appId); });
@@ -257,7 +258,7 @@
       });
     }
 
-    /* Pointer move handler with menubar boundary prevention */
+    /* Move handler with boundaries preventing titlebar clipping */
     function onPointerMove(e) {
       if (!isDragging && !isResizing) return;
 
@@ -269,9 +270,7 @@
         var x = startWinX + deltaX;
         var y = startWinY + deltaY;
 
-        // X boundaries
         x = Math.max(4, Math.min(x, deskRect.width - win.offsetWidth - 4));
-        // Y boundaries: 50px prevents titlebar from slipping behind the top menubar
         y = Math.max(50, Math.min(y, deskRect.height - win.offsetHeight - 4));
 
         currentX = x;
@@ -375,7 +374,7 @@
     buddy.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); buddySay(); } });
   }
 
-  /* ---------------- terminal ---------------- */
+  /* ---------------- terminal with conversational commands ---------------- */
   var termOutput = document.getElementById('termOutput');
   var termInput = document.getElementById('termInput');
   var HELP_TEXT = [
@@ -407,10 +406,39 @@
     var input = raw.trim();
     printLine('visitor@shourov.os:~$ ' + input, 'cmd-line');
     if (!input) return;
+
+    var cleanInput = input.toLowerCase().replace(/[^a-z0-9\s]/g, '');
     var parts = input.split(/\s+/);
     var cmd = parts[0].toLowerCase();
     var rest = parts.slice(1).join(' ');
 
+    // 1. Conversational greetings & responses
+    if (['hello', 'hi', 'hey', 'yo', 'sup', 'heyy', 'hola'].includes(cleanInput)) {
+      printLine("Hey there! 👋 Welcome to my portfolio OS. Type 'help' to see what else you can do!");
+      return;
+    }
+
+    if (['how are you', 'how are u', 'hows it going', 'how are you doing'].includes(cleanInput)) {
+      printLine("I'm running smoothly at 60 FPS and feeling great! How are you doing today? 🙂");
+      return;
+    }
+
+    if (['im good', 'i am good', 'good', 'great', 'doing well', 'fine'].includes(cleanInput)) {
+      printLine("Awesome to hear! Feel free to check out my work or click around the desktop.");
+      return;
+    }
+
+    if (['thanks', 'thank you', 'thx', 'ty'].includes(cleanInput)) {
+      printLine("You're very welcome! Let me know if you need anything else. 😊");
+      return;
+    }
+
+    if (['who made you', 'who created you', 'who built this'].includes(cleanInput)) {
+      printLine("This portfolio OS was built by Shirajul Alam Shourov!");
+      return;
+    }
+
+    // 2. Standard system commands
     switch(cmd){
       case 'help': printLine(HELP_TEXT); break;
       case 'about': openApp('about'); printLine('opening about.txt ...'); break;
@@ -442,7 +470,7 @@
         setTimeout(function(){ closeApp('terminal'); }, 250);
         break;
       default:
-        printLine("command not found: " + cmd + " — type 'help' for a list", 'err');
+        printLine("command not recognized: '" + cmd + "' — type 'help' for available commands or just say hi! 👋", 'err');
     }
   }
 

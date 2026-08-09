@@ -220,7 +220,7 @@ a {
   transform: translateY(0) scale(.94);
 }
 
-/* ---------- DESKTOP ICONS (Fixed Overlay Bug) ---------- */
+/* ---------- DESKTOP ICONS ---------- */
 .icons-layer {
   position: absolute;
   top: calc(var(--menubar-h) + 14px);
@@ -269,7 +269,7 @@ a {
   line-height: 1.2;
 }
 
-/* ---------- WINDOWS (GPU Accelerated & Resizable) ---------- */
+/* ---------- WINDOWS ---------- */
 .windows-layer {
   position: absolute;
   inset: 0;
@@ -317,6 +317,7 @@ a {
   font-weight: 700;
   user-select: none;
   touch-action: none;
+  flex: none;
 }
 
 .window-titlebar:active {
@@ -544,14 +545,56 @@ a {
   cursor: pointer;
 }
 
-/* ---------- TERMINAL WINDOW ---------- */
-.term-body { background: #0B1216; color: #B7F5E4; font-family: var(--font-mono); font-size: 13px; padding: 0; }
-[data-theme="light"] .term-body { background: #0B1216; color: #B7F5E4; }
-.term-output { padding: 12px 14px; height: 220px; overflow-y: auto; white-space: pre-wrap; line-height: 1.55; }
+/* ---------- TERMINAL WINDOW (FLUID & RESIZABLE) ---------- */
+.window[data-app="terminal"] .window-body {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: #0B1216;
+}
+
+.term-body { 
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background: #0B1216; 
+  color: #B7F5E4; 
+  font-family: var(--font-mono); 
+  font-size: 13px; 
+}
+
+.term-output { 
+  flex: 1 1 auto;
+  padding: 14px; 
+  overflow-y: auto; 
+  white-space: pre-wrap; 
+  line-height: 1.55; 
+  min-height: 0;
+}
+
 .term-output .cmd-line { color: #7FE7CC; }
 .term-output .err { color: #FF98A8; }
-.term-input-row { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-top: 1px solid #1F2E30; }
-.term-input-row .prompt { color: #7FE7CC; flex: none; }
+
+.term-input-row { 
+  flex: 0 0 auto;
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+  padding: 12px 14px; 
+  border-top: 1px solid #1F2E30; 
+  background: #0B1216;
+}
+
+.term-input-row .prompt { 
+  color: #7FE7CC; 
+  flex: none; 
+  font-family: var(--font-mono);
+  font-weight: bold;
+}
+
 .term-input-row input {
   flex: 1;
   background: transparent;
@@ -559,8 +602,10 @@ a {
   color: #EAFBF5;
   font-family: var(--font-mono);
   font-size: 13px;
+  outline: none;
+  padding: 0;
+  margin: 0;
 }
-.term-input-row input:focus { outline: none; }
 
 /* ---------- TASKBAR ---------- */
 .taskbar {
