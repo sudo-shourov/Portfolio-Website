@@ -1,258 +1,292 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>shourov.os — Shirajul Alam Shourov</title>
-<meta name="description" content="Shirajul Alam Shourov — Full-Stack Software Developer & UI/UX Designer, styled as a tiny desktop OS.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%96%A5%EF%B8%8F%3C/text%3E%3C/svg%3E">
-<script>
-  // Set theme before first paint, based on system preference, to avoid a flash of the wrong theme.
-  document.documentElement.setAttribute(
-    'data-theme',
-    window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-  );
-</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shirajul Alam Shourov — Portfolio OS</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- ================= BOOT SCREEN ================= -->
-  <div id="boot" role="status" aria-live="polite">
+  <!-- BOOT SCREEN -->
+  <div id="boot">
     <div class="boot-lines">
-      <span>&gt; booting shourov.os ...</span>
-      <span>&gt; loading portfolio.exe ...</span>
-      <span>&gt; warming up the pixels ...</span>
-      <span>&gt; welcome! click anywhere to enter</span>
+      <span>Initializing Shourov_OS v2.4...</span>
+      <span>Loading custom window manager...</span>
+      <span>Mounting terminal environment...</span>
+      <span>System ready. Click anywhere to enter.</span>
     </div>
-    <div class="boot-hint">(this intro only plays once per visit)</div>
+    <div class="boot-hint">[ Click or press any key ]</div>
   </div>
 
-  <!-- ================= DESKTOP ================= -->
+  <!-- DESKTOP CONTAINER -->
   <div id="desktop">
 
-    <div class="menubar">
-      <div class="brand"><span class="dot"></span> sudo shourov</div>
-      <div class="controls">
-        <button class="iconbtn" id="soundToggle" aria-pressed="false" aria-label="Toggle sound effects" title="Toggle sound">🔈</button>
-        <button class="iconbtn" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+    <!-- TOP MENU BAR -->
+    <header class="menubar">
+      <div class="brand">
+        <span class="dot"></span>
+        <span>sudo shourov</span>
       </div>
-    </div>
+      <div class="controls">
+        <button id="soundToggle" class="iconbtn" title="Toggle Sound" aria-label="Toggle Sound" aria-pressed="true">🔊</button>
+        <button id="themeToggle" class="iconbtn" title="Toggle Theme" aria-label="Toggle Theme">☀️</button>
+      </div>
+    </header>
 
-    <div class="icons-layer">
-      <button class="app-icon" data-app="about" aria-label="Open About window">
-        <span class="glyph">🙂</span><span class="label">About</span>
+    <!-- DESKTOP APP ICONS -->
+    <nav class="icons-layer">
+      <button class="app-icon" data-app="about">
+        <div class="glyph">🙂</div>
+        <span class="label">About</span>
       </button>
-      <button class="app-icon" data-app="work" aria-label="Open Work window">
-        <span class="glyph">🗂️</span><span class="label">Work</span>
+      <button class="app-icon" data-app="work">
+        <div class="glyph">🗂️</div>
+        <span class="label">Work</span>
       </button>
-      <button class="app-icon" data-app="gallery" aria-label="Open Gallery window">
-        <span class="glyph">🖼️</span><span class="label">Gallery</span>
+      <button class="app-icon" data-app="gallery">
+        <div class="glyph">🖼️</div>
+        <span class="label">Gallery</span>
       </button>
-      <button class="app-icon" data-app="links" aria-label="Open Links window">
-        <span class="glyph">🔗</span><span class="label">Links</span>
+      <button class="app-icon" data-app="links">
+        <div class="glyph">🔗</div>
+        <span class="label">Links</span>
       </button>
-      <button class="app-icon" data-app="contact" aria-label="Open Contact window">
-        <span class="glyph">✉️</span><span class="label">Contact</span>
+      <button class="app-icon" data-app="contact">
+        <div class="glyph">✉️</div>
+        <span class="label">Contact</span>
       </button>
-      <button class="app-icon" data-app="terminal" aria-label="Open Terminal window">
-        <span class="glyph">⌨️</span><span class="label">Terminal</span>
+      <button class="app-icon" data-app="terminal">
+        <div class="glyph">⌨️</div>
+        <span class="label">Terminal</span>
       </button>
-    </div>
+    </nav>
 
-    <div class="windows-layer" id="windowsLayer">
+    <!-- WINDOWS LAYER -->
+    <div id="windowsLayer" class="windows-layer">
 
-      <!-- ---------- ABOUT ---------- -->
-      <div class="window" data-app="about" style="left:110px; top:20px; width:440px;" role="dialog" aria-label="About window">
+      <!-- ABOUT WINDOW -->
+      <div class="window" data-app="about">
         <div class="window-titlebar">
-          <div class="traffic"><button class="t-close" data-close aria-label="Close"></button><button class="t-min" data-min aria-label="Minimize"></button></div>
+          <div class="traffic">
+            <button class="t-close" data-close title="Close"></button>
+            <button class="t-min" data-min title="Minimize"></button>
+          </div>
           <div class="window-title">🙂 about.txt</div>
         </div>
         <div class="window-body">
           <div class="about-head">
             <div class="avatar">
-              <img src="memg.png" alt="Shirajul Alam Shourov">
+              <!-- Replace with <img src="your-photo.jpg" alt="Shourov"> when available -->
+              <span>S</span>
             </div>
             <div>
-              <p class="name">Shirajul Alam Shourov</p>
-              <p class="role">Full-Stack Software Developer &amp; UI/UX Designer</p>
-              <p class="location">based in Munshiganj, Bangladesh</p>
+              <h2 class="name">Shirajul Alam Shourov</h2>
+              <div class="role">Full-Stack Software Developer & UI/UX Designer</div>
+              <div class="location">Munshiganj, Bangladesh</div>
             </div>
           </div>
-          <a href="resume.pdf" download="resume.pdf" class="resume-btn">
-            📄 Download Resume
-          </a>
-          <p>Hi! I'm Shourov — a full-stack developer and UI/UX designer currently studying
-             Computer Science &amp; Technology. I build responsive web apps with React, Node.js,
-             and Express, and I like pairing that with clean, user-centered design in Figma
-             and the Adobe Creative Suite. I care about clean code, fast performance, and
-             interfaces that actually feel good to use.</p>
 
-          <h3>Development</h3>
+          <a href="#" class="resume-btn" onclick="alert('Link your PDF resume here!'); return false;">📄 Download Resume</a>
+
+          <p>Hi! I'm Shourov — a developer and UI/UX designer currently studying Computer Science & Technology. I build responsive web apps with React, Node.js, and Express, pairing technical clean code with user-centered interfaces.</p>
+
+          <h3>DEVELOPMENT STACK</h3>
           <div class="tag-row">
-            <span class="tag">JavaScript (ES6+)</span><span class="tag">Python</span>
-            <span class="tag">React.js</span><span class="tag">Node.js</span>
-            <span class="tag">Express.js</span><span class="tag">MongoDB</span>
-            <span class="tag">PostgreSQL</span><span class="tag">REST APIs</span>
-            <span class="tag">Tailwind CSS</span><span class="tag">Git &amp; GitHub</span>
+            <span class="tag">JavaScript (ES6+)</span>
+            <span class="tag">React.js</span>
+            <span class="tag">Node.js</span>
+            <span class="tag">Express.js</span>
+            <span class="tag">HTML5 / CSS3</span>
+            <span class="tag">Git & GitHub</span>
           </div>
 
-          <h3>Design</h3>
+          <h3>DESIGN TOOLS</h3>
           <div class="tag-row">
-            <span class="tag">Figma</span><span class="tag">Adobe Photoshop</span>
-            <span class="tag">Adobe Illustrator</span><span class="tag">Canva</span>
-            <span class="tag">UI/UX Prototyping</span><span class="tag">Responsive Design</span>
+            <span class="tag">Figma</span>
+            <span class="tag">Adobe Illustrator</span>
+            <span class="tag">Adobe Photoshop</span>
+            <span class="tag">UI/UX Prototyping</span>
           </div>
-
-          <h3>Education</h3>
-          <p>Diploma in Engineering — Computer Science &amp; Technology (CST)<br>
-             Munshiganj Polytechnic Institute · expected 2029</p>
-
-          <h3>Languages</h3>
-          <p>English (professional) · Bengali (native)</p>
         </div>
       </div>
 
-      <!-- ---------- WORK ---------- -->
-      <div class="window" data-app="work" style="left:170px; top:70px; width:480px;" role="dialog" aria-label="Work window">
+      <!-- WORK WINDOW -->
+      <div class="window" data-app="work">
         <div class="window-titlebar">
-          <div class="traffic"><button class="t-close" data-close aria-label="Close"></button><button class="t-min" data-min aria-label="Minimize"></button></div>
+          <div class="traffic">
+            <button class="t-close" data-close title="Close"></button>
+            <button class="t-min" data-min title="Minimize"></button>
+          </div>
           <div class="window-title">🗂️ work</div>
         </div>
         <div class="window-body">
-          <p>A few things I've built. <!-- EDIT: point each "view" link at the live site or repo --></p>
-
+          <h2>Featured Projects</h2>
+          
           <div class="project">
             <div class="project-top">
-              <h4>DevConnect</h4>
-              <a class="link" href="#" title="Add a live link or repo">view →</a>
+              <h4>Portfolio Desktop OS</h4>
+              <a href="#" class="link">View Source ↗</a>
             </div>
-            <p>A full-stack developer community platform with authentication, profile
-               management, and discussion threads. Shipped 15+ REST API endpoints and
-               used Figma prototypes + Tailwind CSS to speed up page rendering by 25%.</p>
-            <div class="tag-row"><span class="tag">React.js</span><span class="tag">Node.js</span><span class="tag">Express.js</span><span class="tag">MongoDB</span><span class="tag">Tailwind CSS</span></div>
+            <p>Interactive web desktop environment built with pure Vanilla JavaScript, high-performance GPU transforms, custom audio synthesis, and terminal CLI.</p>
+            <div class="tag-row">
+              <span class="tag">JavaScript</span>
+              <span class="tag">CSS Variables</span>
+              <span class="tag">Web Audio API</span>
+            </div>
           </div>
 
           <div class="project">
             <div class="project-top">
-              <h4>E-Commerce Experience Hub</h4>
-              <a class="link" href="#" title="Add a live link or repo">view →</a>
+              <h4>Full-Stack Web App</h4>
+              <a href="#" class="link">Live Demo ↗</a>
             </div>
-            <p>An interactive e-commerce catalog with dynamic filtering, live search, and
-               global state via React Hooks. Integrated payment gateway APIs and hit
-               sub-200ms response times, verified through Postman.</p>
-            <div class="tag-row"><span class="tag">React.js</span><span class="tag">JavaScript</span><span class="tag">REST APIs</span><span class="tag">Figma</span></div>
-          </div>
-
-          <div class="project">
-            <div class="project-top">
-              <h4>Brand Identity &amp; Graphic Design Suite</h4>
-              <a class="link" href="#" title="Add a live link or portfolio piece">view →</a>
+            <p>Responsive full-stack application featuring user authentication, REST API integrations, and database storage.</p>
+            <div class="tag-row">
+              <span class="tag">React</span>
+              <span class="tag">Node.js</span>
+              <span class="tag">MongoDB</span>
             </div>
-            <p>Corporate visual identities, logos, and print-ready graphic suites for
-               clients — optimized vector assets to cut file sizes by 35% with no loss
-               in visual fidelity.</p>
-            <div class="tag-row"><span class="tag">Photoshop</span><span class="tag">Illustrator</span><span class="tag">Canva</span><span class="tag">UI/UX Prototyping</span></div>
           </div>
         </div>
       </div>
 
-      <!-- ---------- GALLERY ---------- -->
-      <div class="window" data-app="gallery" style="left:230px; top:110px; width:380px;" role="dialog" aria-label="Gallery window">
+      <!-- GALLERY WINDOW -->
+      <div class="window" data-app="gallery">
         <div class="window-titlebar">
-          <div class="traffic"><button class="t-close" data-close aria-label="Close"></button><button class="t-min" data-min aria-label="Minimize"></button></div>
+          <div class="traffic">
+            <button class="t-close" data-close title="Close"></button>
+            <button class="t-min" data-min title="Minimize"></button>
+          </div>
           <div class="window-title">🖼️ gallery</div>
         </div>
         <div class="window-body">
-          <p>UI/UX and visual design samples. <!-- EDIT: replace each tile below with an &lt;img&gt; --></p>
+          <h2>Creative Showcase</h2>
           <div class="art-grid">
-            <div class="art-tile"><span class="emoji">🎨</span>add image</div>
-            <div class="art-tile"><span class="emoji">🎨</span>add image</div>
-            <div class="art-tile"><span class="emoji">🎨</span>add image</div>
-            <div class="art-tile"><span class="emoji">🎨</span>add image</div>
+            <div class="art-tile">
+              <span class="emoji">🎨</span>
+              <span>UI Design</span>
+            </div>
+            <div class="art-tile">
+              <span class="emoji">✨</span>
+              <span>Branding</span>
+            </div>
+            <div class="art-tile">
+              <span class="emoji">💻</span>
+              <span>Web Apps</span>
+            </div>
+            <div class="art-tile">
+              <span class="emoji">📐</span>
+              <span>Prototypes</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- ---------- LINKS ---------- -->
-      <div class="window" data-app="links" style="left:260px; top:60px; width:360px;" role="dialog" aria-label="Links window">
+      <!-- LINKS WINDOW -->
+      <div class="window" data-app="links">
         <div class="window-titlebar">
-          <div class="traffic"><button class="t-close" data-close aria-label="Close"></button><button class="t-min" data-min aria-label="Minimize"></button></div>
+          <div class="traffic">
+            <button class="t-close" data-close title="Close"></button>
+            <button class="t-min" data-min title="Minimize"></button>
+          </div>
           <div class="window-title">🔗 links</div>
         </div>
         <div class="window-body">
-          <p>Find me elsewhere — clicking any of these opens a new tab.</p>
+          <h2>Social Profiles</h2>
           <div class="link-grid">
-            <a class="link-card" href="https://www.linkedin.com/in/sirajul-alam-shourov/" target="_blank" rel="noopener noreferrer">💼 LinkedIn</a>
-            <a class="link-card" href="https://github.com/sudo-shourov" target="_blank" rel="noopener noreferrer">🐙 GitHub</a>
-            <a class="link-card" href="https://www.instagram.com/sirajul.alam.shourov/" target="_blank" rel="noopener noreferrer">📷 Instagram</a>
-            <a class="link-card" href="https://www.facebook.com/sudo.sirajul.alam.shourov" target="_blank" rel="noopener noreferrer">📘 Facebook</a>
-            <!-- EDIT: add your YouTube URL once the channel is up -->
-            <a class="link-card" href="#" title="Add your YouTube link">▶️ YouTube</a>
+            <a href="https://github.com" target="_blank" rel="noopener" class="link-card">
+              <span>🐱</span>
+              <span>GitHub</span>
+            </a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener" class="link-card">
+              <span>💼</span>
+              <span>LinkedIn</span>
+            </a>
+            <a href="https://facebook.com" target="_blank" rel="noopener" class="link-card">
+              <span>🌐</span>
+              <span>Facebook</span>
+            </a>
+            <a href="mailto:your-email@example.com" class="link-card">
+              <span>✉️</span>
+              <span>Email</span>
+            </a>
           </div>
         </div>
       </div>
 
-      <!-- ---------- CONTACT ---------- -->
-      <div class="window" data-app="contact" style="left:290px; top:150px;" role="dialog" aria-label="Contact window">
+      <!-- CONTACT WINDOW -->
+      <div class="window" data-app="contact">
         <div class="window-titlebar">
-          <div class="traffic"><button class="t-close" data-close aria-label="Close"></button><button class="t-min" data-min aria-label="Minimize"></button></div>
+          <div class="traffic">
+            <button class="t-close" data-close title="Close"></button>
+            <button class="t-min" data-min title="Minimize"></button>
+          </div>
           <div class="window-title">✉️ contact</div>
         </div>
         <div class="window-body">
-          <p>Based in Munshiganj, Bangladesh. The best way to reach me is by email!</p>
-          <a class="mail-btn" href="mailto:sirajul.alam.shourov@gmail.com">✉️ send me an email</a>
+          <h2>Get in Touch</h2>
+          <p>Interested in collaborating or hiring me for a project? Send me an email anytime!</p>
+
+          <a href="mailto:your-email@example.com" class="mail-btn">✉️ Send Email</a>
+
           <div class="copy-row">
-            <code id="emailText">sirajul.alam.shourov@gmail.com</code>
+            <code id="emailText">shourov.dev@example.com</code>
             <button id="copyEmail">copy</button>
           </div>
         </div>
       </div>
 
-      <!-- ---------- TERMINAL (bonus interactive extra) ---------- -->
-      <div class="window" data-app="terminal" style="left:140px; top:190px; width:440px;" role="dialog" aria-label="Terminal window">
+      <!-- TERMINAL WINDOW -->
+      <div class="window" data-app="terminal">
         <div class="window-titlebar">
-          <div class="traffic"><button class="t-close" data-close aria-label="Close"></button><button class="t-min" data-min aria-label="Minimize"></button></div>
+          <div class="traffic">
+            <button class="t-close" data-close title="Close"></button>
+            <button class="t-min" data-min title="Minimize"></button>
+          </div>
           <div class="window-title">⌨️ terminal</div>
         </div>
-        <div class="window-body term-body">
-          <div class="term-output" id="termOutput">welcome! type <span class="cmd-line">help</span> to see what this does.
-</div>
-          <div class="term-input-row">
-            <span class="prompt">visitor@shourov.os:~$</span>
-            <input id="termInput" type="text" autocomplete="off" spellcheck="false" aria-label="Terminal input">
+        <div class="window-body">
+          <div class="term-body">
+            <div id="termOutput" class="term-output">welcome! type 'help' or just say 'hello' to chat 👋</div>
+            <div id="termResizer" class="term-resizer" title="Drag to resize input area"></div>
+            <div class="term-input-row">
+              <span class="prompt">visitor@shourov.os:~$</span>
+              <input type="text" id="termInput" placeholder="type a command or greeting..." autocomplete="off" spellcheck="false">
+            </div>
           </div>
         </div>
       </div>
 
     </div>
 
-    <!-- ---------- desktop buddy ---------- -->
-    <div id="buddy" role="button" tabindex="0" aria-label="A small desktop companion, click to say hi">
-      <div class="buddy-bubble" id="buddyBubble"></div>
+    <!-- DESKTOP BUDDY MASCOT -->
+    <div id="buddy" tabindex="0" title="Click me!">
+      <div id="buddyBubble" class="buddy-bubble">hi there! (｡•̀ᴗ-)✧</div>
       <svg viewBox="0 0 100 100">
-        <ellipse cx="50" cy="58" rx="38" ry="34" fill="var(--teal)"/>
-        <ellipse class="eye" cx="37" cy="52" rx="5" ry="6.5" fill="#0B1216"/>
-        <ellipse class="eye" cx="63" cy="52" rx="5" ry="6.5" fill="#0B1216"/>
-        <path d="M40 68 Q50 76 60 68" stroke="#0B1216" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <ellipse cx="26" cy="64" rx="6" ry="4" fill="var(--coral)" opacity=".6"/>
-        <ellipse cx="74" cy="64" rx="6" ry="4" fill="var(--coral)" opacity=".6"/>
+        <circle cx="50" cy="50" r="42" fill="#3FD8C3" />
+        <ellipse class="eye" cx="36" cy="44" rx="5" ry="7" fill="#0E1620" />
+        <ellipse class="eye" cx="64" cy="44" rx="5" ry="7" fill="#0E1620" />
+        <path d="M 38 62 Q 50 72 62 62" fill="none" stroke="#0E1620" stroke-width="4" stroke-linecap="round" />
       </svg>
     </div>
 
-    <div class="taskbar" role="toolbar" aria-label="Open windows">
-      <div class="running-tabs" id="runningTabs"></div>
+    <!-- TASKBAR -->
+    <footer class="taskbar">
+      <div id="runningTabs" class="running-tabs"></div>
       <div class="systray">
-        <a href="mailto:sirajul.alam.shourov@gmail.com" title="Email" aria-label="Email">✉️</a>
-        <span class="clock" id="clock">--:--</span>
+        <div id="clock" class="clock">12:00 PM</div>
       </div>
-    </div>
+    </footer>
 
   </div>
 
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

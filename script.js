@@ -1,6 +1,3 @@
-/* ======================================================
-   PORTFOLIO OS TEMPLATE — FULL JAVASCRIPT
-   ====================================================== */
 (function(){
   'use strict';
 
@@ -111,7 +108,7 @@
 
       // Default spawn positioning clears top menubar safely
       var initialLeft = 130;
-      var initialTop = 60; // Forced 60px margin
+      var initialTop = 60; // Forced 60px margin below top menubar
 
       el.style.left = '0px';
       el.style.top = '0px';
@@ -374,9 +371,44 @@
     buddy.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); buddySay(); } });
   }
 
-  /* ---------------- terminal with conversational commands ---------------- */
+  /* ---------------- terminal with resizable divider & natural conversational AI ---------------- */
   var termOutput = document.getElementById('termOutput');
   var termInput = document.getElementById('termInput');
+  var termInputRow = document.querySelector('.term-input-row');
+  var termResizer = document.getElementById('termResizer');
+
+  if (termResizer && termInputRow) {
+    var isResizingDivider = false;
+    var startY = 0;
+    var startHeight = 0;
+
+    termResizer.addEventListener('pointerdown', function(e){
+      isResizingDivider = true;
+      startY = e.clientY;
+      startHeight = termInputRow.offsetHeight;
+      termResizer.classList.add('dragging');
+      termResizer.setPointerCapture(e.pointerId);
+    });
+
+    termResizer.addEventListener('pointermove', function(e){
+      if (!isResizingDivider) return;
+      var deltaY = startY - e.clientY;
+      var newHeight = Math.max(36, Math.min(220, startHeight + deltaY));
+      termInputRow.style.height = newHeight + 'px';
+    });
+
+    function stopResize(e){
+      if (isResizingDivider) {
+        isResizingDivider = false;
+        termResizer.classList.remove('dragging');
+        try { termResizer.releasePointerCapture(e.pointerId); } catch(err){}
+      }
+    }
+
+    termResizer.addEventListener('pointerup', stopResize);
+    termResizer.addEventListener('pointercancel', stopResize);
+  }
+
   var HELP_TEXT = [
     'available commands:',
     '  help              show this list',
@@ -407,38 +439,43 @@
     printLine('visitor@shourov.os:~$ ' + input, 'cmd-line');
     if (!input) return;
 
-    var cleanInput = input.toLowerCase().replace(/[^a-z0-9\s]/g, '');
+    var cleanInput = input.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
     var parts = input.split(/\s+/);
     var cmd = parts[0].toLowerCase();
     var rest = parts.slice(1).join(' ');
 
-    // 1. Conversational greetings & responses
-    if (['hello', 'hi', 'hey', 'yo', 'sup', 'heyy', 'hola'].includes(cleanInput)) {
+    // 1. Conversational responses
+    var greetings = ['hello', 'hi', 'hey', 'yo', 'sup', 'heyy', 'hola', 'namaste', 'bonjour'];
+    if (greetings.includes(cleanInput)) {
       printLine("Hey there! 👋 Welcome to my portfolio OS. Type 'help' to see what else you can do!");
       return;
     }
 
-    if (['how are you', 'how are u', 'hows it going', 'how are you doing'].includes(cleanInput)) {
+    var howAreYou = ['how are you', 'how are u', 'hows it going', 'how are you doing', 'bien', 'como estas'];
+    if (howAreYou.includes(cleanInput)) {
       printLine("I'm running smoothly at 60 FPS and feeling great! How are you doing today? 🙂");
       return;
     }
 
-    if (['im good', 'i am good', 'good', 'great', 'doing well', 'fine'].includes(cleanInput)) {
+    var goodResponses = ['im good', 'i am good', 'good', 'great', 'doing well', 'fine', 'all good'];
+    if (goodResponses.includes(cleanInput)) {
       printLine("Awesome to hear! Feel free to check out my work or click around the desktop.");
       return;
     }
 
-    if (['thanks', 'thank you', 'thx', 'ty'].includes(cleanInput)) {
+    var thanks = ['thanks', 'thank you', 'thx', 'ty', 'gracias'];
+    if (thanks.includes(cleanInput)) {
       printLine("You're very welcome! Let me know if you need anything else. 😊");
       return;
     }
 
-    if (['who made you', 'who created you', 'who built this'].includes(cleanInput)) {
+    var creators = ['who made you', 'who created you', 'who built this', 'who are you'];
+    if (creators.includes(cleanInput)) {
       printLine("This portfolio OS was built by Shirajul Alam Shourov!");
       return;
     }
 
-    // 2. Standard system commands
+    // 2. System commands
     switch(cmd){
       case 'help': printLine(HELP_TEXT); break;
       case 'about': openApp('about'); printLine('opening about.txt ...'); break;
