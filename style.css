@@ -568,7 +568,7 @@ a {
 }
 
 .term-output { 
-  flex: 1; /* Takes up all available vertical space */
+  flex: 1 1 auto;
   padding: 14px; 
   overflow-y: auto; 
   white-space: pre-wrap; 

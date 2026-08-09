@@ -3,24 +3,27 @@
 
   var isMobile = function(){ return window.matchMedia('(max-width:760px)').matches; };
 
-  /* ---------------- boot screen ---------------- */
-  var boot = document.getElementById('boot');
-  function dismissBoot(){
-    if (!boot || boot.classList.contains('hide')) return;
-    boot.classList.add('hide');
-    setTimeout(function(){ boot.style.display = 'none'; }, 400);
-  }
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    dismissBoot();
-  } else if (boot) {
-    boot.addEventListener('click', dismissBoot);
-    window.addEventListener('keydown', dismissBoot, { once: true });
-    setTimeout(dismissBoot, 2200);
+  // --- Boot Screen ---
+  const bootScreen = document.getElementById('boot');
+  if (bootScreen) {
+    bootScreen.addEventListener('click', () => {
+      bootScreen.classList.add('hide');
+    });
   }
 
-  /* ---------------- theme + sound toggles ---------------- */
-  var root = document.documentElement;
-  var themeBtn = document.getElementById('themeToggle');
+  // --- Live Clock ---
+  const clockEl = document.getElementById('clock');
+  function updateClock() {
+    const now = new Date();
+    if (clockEl) {
+      clockEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  // --- Theme Toggle ---
+  const themeBtn = document.getElementById('theme-toggle');
   if (themeBtn) {
     themeBtn.addEventListener('click', function(){
       var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
