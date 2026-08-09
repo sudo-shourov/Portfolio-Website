@@ -453,7 +453,7 @@
 
     var howAreYou = ['how are you', 'how are u', 'hows it going', 'how are you doing', 'bien', 'como estas'];
     if (howAreYou.includes(cleanInput)) {
-      printLine("I'm running smoothly at 60 FPS and feeling great! How are you doing today? 🙂");
+      printLine("I'm running smoothly and feeling great! How are you doing today? 🙂");
       return;
     }
 
