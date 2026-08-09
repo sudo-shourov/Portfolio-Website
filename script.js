@@ -3,27 +3,24 @@
 
   var isMobile = function(){ return window.matchMedia('(max-width:760px)').matches; };
 
-  // --- Boot Screen ---
-  const bootScreen = document.getElementById('boot');
-  if (bootScreen) {
-    bootScreen.addEventListener('click', () => {
-      bootScreen.classList.add('hide');
-    });
+  /* ---------------- BOOT SCREEN ---------------- */
+  var boot = document.getElementById('boot');
+  function dismissBoot(){
+    if (!boot || boot.classList.contains('hide')) return;
+    boot.classList.add('hide');
+    setTimeout(function(){ boot.style.display = 'none'; }, 400);
+  }
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    dismissBoot();
+  } else if (boot) {
+    boot.addEventListener('click', dismissBoot);
+    window.addEventListener('keydown', dismissBoot, { once: true });
+    setTimeout(dismissBoot, 2200);
   }
 
-  // --- Live Clock ---
-  const clockEl = document.getElementById('clock');
-  function updateClock() {
-    const now = new Date();
-    if (clockEl) {
-      clockEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    }
-  }
-  setInterval(updateClock, 1000);
-  updateClock();
-
-  // --- Theme Toggle ---
-  const themeBtn = document.getElementById('theme-toggle');
+  /* ---------------- THEME & SOUND CONTROLS ---------------- */
+  var root = document.documentElement;
+  var themeBtn = document.getElementById('themeToggle');
   if (themeBtn) {
     themeBtn.addEventListener('click', function(){
       var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
@@ -34,7 +31,7 @@
     themeBtn.textContent = root.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
   }
 
-  /* Sound ON by default */
+  /* Web Audio Synthesizer */
   var soundOn = true;
   var soundBtn = document.getElementById('soundToggle');
   var audioCtx = null;
@@ -67,7 +64,7 @@
     });
   }
 
-  /* ---------------- window manager (fluid GPU + boundaries) ---------------- */
+  /* ---------------- WINDOW MANAGER ---------------- */
   var windowsLayer = document.getElementById('windowsLayer');
   var runningTabs = document.getElementById('runningTabs');
   var desktopEl = document.getElementById('desktop');
@@ -75,12 +72,13 @@
   var running = {}; // appId -> { winEl, tabEl, minimized, x, y }
 
   var APP_META = {
-    about:    { icon:'🙂', title:'about.txt' },
-    work:     { icon:'🗂️', title:'work' },
-    gallery:  { icon:'🖼️', title:'gallery' },
-    links:    { icon:'🔗', title:'links' },
-    contact:  { icon:'✉️', title:'contact' },
-    terminal: { icon:'⌨️', title:'terminal' }
+    about:        { icon:'🙂', title:'about.txt' },
+    work:         { icon:'🗂️', title:'work' },
+    gallery:      { icon:'🖼️', title:'gallery' },
+    links:        { icon:'🔗', title:'links' },
+    contact:      { icon:'✉️', title:'contact' },
+    terminal:     { icon:'⌨️', title:'terminal' },
+    'pdf-viewer': { icon:'📄', title:'Viewer' }
   };
 
   function winEl(appId){ return windowsLayer.querySelector('.window[data-app="'+appId+'"]'); }
@@ -103,15 +101,16 @@
     var el = winEl(appId);
     if (!el) return;
     if (!running[appId]) {
+      var meta = APP_META[appId] || { icon: '📄', title: appId };
       var tab = document.createElement('button');
       tab.className = 'run-tab';
-      tab.innerHTML = APP_META[appId].icon + ' <span>' + APP_META[appId].title + '</span>';
+      tab.innerHTML = meta.icon + ' <span>' + meta.title + '</span>';
       tab.addEventListener('click', function(){ toggleFromTaskbar(appId); });
       runningTabs.appendChild(tab);
 
       // Default spawn positioning clears top menubar safely
-      var initialLeft = 130;
-      var initialTop = 60; // Forced 60px margin below top menubar
+      var initialLeft = isMobile() ? 0 : 130 + (Object.keys(running).length * 20);
+      var initialTop = isMobile() ? 0 : 60 + (Object.keys(running).length * 20);
 
       el.style.left = '0px';
       el.style.top = '0px';
@@ -165,11 +164,20 @@
     }
   }
 
+  /* App launch click bindings */
   document.querySelectorAll('.app-icon').forEach(function(btn){
     btn.addEventListener('click', function(){ openApp(btn.getAttribute('data-app')); });
   });
 
-  /* Append resize handle */
+  /* App cross-trigger bindings (e.g. "View Resume" button inside About window) */
+  document.querySelectorAll('[data-app-trigger]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var targetApp = btn.getAttribute('data-app-trigger');
+      openApp(targetApp);
+    });
+  });
+
+  /* Window control buttons & click-to-focus */
   windowsLayer.querySelectorAll('.window').forEach(function(win){
     var appId = win.getAttribute('data-app');
     win.addEventListener('mousedown', function(){ focusApp(appId); });
@@ -186,7 +194,7 @@
     }
   });
 
-  /* Fluid dragging and resizing using requestAnimationFrame */
+  /* Dragging and Resizing utilizing requestAnimationFrame for GPU performance */
   windowsLayer.querySelectorAll('.window').forEach(function(win){
     var bar = win.querySelector('.window-titlebar');
     var handle = win.querySelector('.resize-handle');
@@ -258,7 +266,7 @@
       });
     }
 
-    /* Move handler with boundaries preventing titlebar clipping */
+    /* Move handler with bounding boundaries */
     function onPointerMove(e) {
       if (!isDragging && !isResizing) return;
 
@@ -271,7 +279,7 @@
         var y = startWinY + deltaY;
 
         x = Math.max(4, Math.min(x, deskRect.width - win.offsetWidth - 4));
-        y = Math.max(50, Math.min(y, deskRect.height - win.offsetHeight - 4));
+        y = Math.max(48, Math.min(y, deskRect.height - win.offsetHeight - 4));
 
         currentX = x;
         currentY = y;
@@ -291,7 +299,7 @@
       scheduleUpdate();
     }
 
-    /* Release handler */
+    /* Pointer release */
     function onPointerUp(e) {
       if (isDragging && bar) {
         isDragging = false;
@@ -320,6 +328,7 @@
     }
   });
 
+  /* Global Keyboard Shortcuts */
   window.addEventListener('keydown', function(e){
     if (e.key === 'Escape') {
       var activeId = Object.keys(running).find(function(id){ return running[id].tabEl.classList.contains('active'); });
@@ -327,7 +336,7 @@
     }
   });
 
-  /* ---------------- clock ---------------- */
+  /* ---------------- SYSTEM CLOCK ---------------- */
   var clockEl = document.getElementById('clock');
   function tickClock(){
     if (!clockEl) return;
@@ -340,7 +349,7 @@
   tickClock();
   setInterval(tickClock, 1000 * 15);
 
-  /* ---------------- copy email ---------------- */
+  /* ---------------- COPY EMAIL TO CLIPBOARD ---------------- */
   var copyBtn = document.getElementById('copyEmail');
   if (copyBtn) {
     copyBtn.addEventListener('click', function(){
@@ -354,10 +363,10 @@
     });
   }
 
-  /* ---------------- desktop buddy ---------------- */
+  /* ---------------- DESKTOP BUDDY MASCOT ---------------- */
   var buddy = document.getElementById('buddy');
   var bubble = document.getElementById('buddyBubble');
-  var BUDDY_LINES = ['hi there! (｡•̀ᴗ-)✧', 'boop!', 'click an icon to explore ✨', 'try the terminal app!', 'you found me!', 'have a nice day :)'];
+  var BUDDY_LINES = ['hi there! (｡•̀ᴗ-)✧', 'boop!', 'click an icon to explore ✨', 'try opening the terminal!', 'you found me!', 'have a nice day :)'];
   
   function buddySay(){
     if (!bubble || !buddy) return;
@@ -374,58 +383,25 @@
     buddy.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); buddySay(); } });
   }
 
-  /* ---------------- terminal with resizable divider & natural conversational AI ---------------- */
+  /* ---------------- TERMINAL CLI ENVIRONMENT ---------------- */
   var termOutput = document.getElementById('termOutput');
   var termInput = document.getElementById('termInput');
-  var termInputRow = document.querySelector('.term-input-row');
-  var termResizer = document.getElementById('termResizer');
-
-  if (termResizer && termInputRow) {
-    var isResizingDivider = false;
-    var startY = 0;
-    var startHeight = 0;
-
-    termResizer.addEventListener('pointerdown', function(e){
-      isResizingDivider = true;
-      startY = e.clientY;
-      startHeight = termInputRow.offsetHeight;
-      termResizer.classList.add('dragging');
-      termResizer.setPointerCapture(e.pointerId);
-    });
-
-    termResizer.addEventListener('pointermove', function(e){
-      if (!isResizingDivider) return;
-      var deltaY = startY - e.clientY;
-      var newHeight = Math.max(36, Math.min(220, startHeight + deltaY));
-      termInputRow.style.height = newHeight + 'px';
-    });
-
-    function stopResize(e){
-      if (isResizingDivider) {
-        isResizingDivider = false;
-        termResizer.classList.remove('dragging');
-        try { termResizer.releasePointerCapture(e.pointerId); } catch(err){}
-      }
-    }
-
-    termResizer.addEventListener('pointerup', stopResize);
-    termResizer.addEventListener('pointercancel', stopResize);
-  }
 
   var HELP_TEXT = [
     'available commands:',
     '  help              show this list',
     '  about             open the about window',
+    '  resume            view resume in pdf reader',
     '  work / projects   open the work window',
     '  gallery           open the gallery window',
     '  contact           open the contact window',
     '  links             open the links window',
     '  whoami            ...take a guess',
     '  date              show the current date/time',
-    '  theme <light|dark> switch the theme',
+    '  theme <light|dark> switch desktop theme',
     '  echo <text>       repeat text back',
-    '  clear             clear this screen',
-    '  exit              close this window'
+    '  clear             clear terminal screen',
+    '  exit              close terminal'
   ].join('\n');
 
   function printLine(text, cls){
@@ -447,46 +423,41 @@
     var cmd = parts[0].toLowerCase();
     var rest = parts.slice(1).join(' ');
 
-    // 1. Conversational responses
-    var greetings = ['hello', 'hi', 'hey', 'yo', 'sup', 'heyy', 'hola', 'namaste', 'bonjour'];
+    /* 1. Conversational Queries */
+    var greetings = ['hello', 'hi', 'hey', 'yo', 'sup', 'heyy', 'hola', 'namaste'];
     if (greetings.includes(cleanInput)) {
-      printLine("Hey there! 👋 Welcome to my portfolio OS. Type 'help' to see what else you can do!");
+      printLine("Hey there! 👋 Welcome to my portfolio OS. Type 'help' to see available terminal commands!");
       return;
     }
 
-    var howAreYou = ['how are you', 'how are u', 'hows it going', 'how are you doing', 'bien', 'como estas'];
+    var howAreYou = ['how are you', 'how are u', 'hows it going', 'how are you doing'];
     if (howAreYou.includes(cleanInput)) {
-      printLine("I'm running smoothly and feeling great! How are you doing today? 🙂");
+      printLine("System status nominal! Operating smoothly and ready to assist you. 🙂");
       return;
     }
 
-    var goodResponses = ['im good', 'i am good', 'good', 'great', 'doing well', 'fine', 'all good'];
-    if (goodResponses.includes(cleanInput)) {
-      printLine("Awesome to hear! Feel free to check out my work or click around the desktop.");
-      return;
-    }
-
-    var thanks = ['thanks', 'thank you', 'thx', 'ty', 'gracias'];
+    var thanks = ['thanks', 'thank you', 'thx', 'ty'];
     if (thanks.includes(cleanInput)) {
-      printLine("You're very welcome! Let me know if you need anything else. 😊");
+      printLine("You're very welcome! Feel free to explore more apps around the desktop. 😊");
       return;
     }
 
     var creators = ['who made you', 'who created you', 'who built this', 'who are you'];
     if (creators.includes(cleanInput)) {
-      printLine("This portfolio OS was built by Shirajul Alam Shourov!");
+      printLine("This portfolio OS environment was designed and engineered by Shirajul Alam Shourov!");
       return;
     }
 
-    // 2. System commands
+    /* 2. System Commands */
     switch(cmd){
       case 'help': printLine(HELP_TEXT); break;
       case 'about': openApp('about'); printLine('opening about.txt ...'); break;
+      case 'resume': case 'pdf': openApp('pdf-viewer'); printLine('opening resume.pdf in viewer ...'); break;
       case 'work': case 'projects': openApp('work'); printLine('opening work ...'); break;
       case 'gallery': openApp('gallery'); printLine('opening gallery ...'); break;
       case 'links': openApp('links'); printLine('opening links ...'); break;
       case 'contact': openApp('contact'); printLine('opening contact ...'); break;
-      case 'whoami': printLine("you're currently poking around Shourov's dev/design portfolio. hi!"); break;
+      case 'whoami': printLine("you're currently exploring Shourov's interactive Web OS portfolio. welcome!"); break;
       case 'date': printLine(new Date().toString()); break;
       case 'echo': printLine(rest); break;
       case 'clear': if (termOutput) termOutput.innerHTML = ''; break;
@@ -494,13 +465,13 @@
         if (rest === 'light' || rest === 'dark') {
           root.setAttribute('data-theme', rest);
           if (themeBtn) themeBtn.textContent = rest === 'dark' ? '☀️' : '🌙';
-          printLine('theme set to ' + rest + '.');
+          printLine('theme changed to ' + rest + '.');
         } else {
           printLine("usage: theme <light|dark>", 'err');
         }
         break;
       case 'sudo':
-        printLine('nice try. permission denied — this is a portfolio, not a shell 😄', 'err');
+        printLine('nice try! permission denied — this is a client-side web terminal 😄', 'err');
         break;
       case 'ls':
         printLine(Object.keys(APP_META).join('  '));
@@ -510,7 +481,7 @@
         setTimeout(function(){ closeApp('terminal'); }, 250);
         break;
       default:
-        printLine("command not recognized: '" + cmd + "' — type 'help' for available commands or just say hi! 👋", 'err');
+        printLine("command not recognized: '" + cmd + "' — type 'help' for options or say hi! 👋", 'err');
     }
   }
 
@@ -524,7 +495,7 @@
     });
   }
 
-  /* Open About window after boot */
+  /* Automatically open About window after boot */
   setTimeout(function(){ openApp('about'); }, isMobile() ? 300 : 2300);
 
 })();

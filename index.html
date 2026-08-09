@@ -17,10 +17,10 @@
   <!-- BOOT SCREEN -->
   <div id="boot">
     <div class="boot-lines">
-      <span>Initializing Shourov_OS v2.4...</span>
-      <span>Loading custom window manager...</span>
-      <span>Mounting terminal environment...</span>
-      <span>System ready. Click anywhere to enter.</span>
+      <span>> Initializing Shourov_OS v2.4...</span>
+      <span>> Loading custom window manager...</span>
+      <span>> Mounting terminal environment...</span>
+      <span>> System ready. Click anywhere to enter.</span>
     </div>
     <div class="boot-hint">[ Click or press any key ]</div>
   </div>
@@ -92,7 +92,10 @@
             </div>
           </div>
 
-          <a href="#" class="resume-btn" onclick="alert('Link your PDF resume here!'); return false;">📄 Download Resume</a>
+          <div class="resume-actions">
+            <button class="resume-btn" data-app-trigger="pdf-viewer">👁️ View Resume</button>
+            <a href="resume.pdf" class="resume-btn download-btn" download="Shourov_Resume.pdf">📄 Download (.pdf)</a>
+          </div>
 
           <p>Hi! I'm Shourov — a developer and UI/UX designer currently studying Computer Science & Technology. I build responsive web apps with React, Node.js, and Express, pairing technical clean code with user-centered interfaces.</p>
 
@@ -113,6 +116,7 @@
             <span class="tag">Adobe Photoshop</span>
             <span class="tag">UI/UX Prototyping</span>
           </div>
+          <div class="resize-handle"></div>
         </div>
       </div>
 
@@ -153,6 +157,7 @@
               <span class="tag">MongoDB</span>
             </div>
           </div>
+          <div class="resize-handle"></div>
         </div>
       </div>
 
@@ -185,6 +190,7 @@
               <span>Prototypes</span>
             </div>
           </div>
+          <div class="resize-handle"></div>
         </div>
       </div>
 
@@ -217,6 +223,7 @@
               <span>Email</span>
             </a>
           </div>
+          <div class="resize-handle"></div>
         </div>
       </div>
 
@@ -239,6 +246,7 @@
             <code id="emailText">sirajul.alam.shourov@gmail.com</code>
             <button id="copyEmail">copy</button>
           </div>
+          <div class="resize-handle"></div>
         </div>
       </div>
 
@@ -254,12 +262,27 @@
         <div class="window-body">
           <div class="term-body">
             <div id="termOutput" class="term-output">welcome! type 'help' or just say 'hello' to chat 👋</div>
-            <div id="termResizer" class="term-resizer" title="Drag to resize input area"></div>
             <div class="term-input-row">
               <span class="prompt">visitor@shourov.os:~$</span>
               <input type="text" id="termInput" placeholder="type a command or greeting..." autocomplete="off" spellcheck="false">
             </div>
           </div>
+          <div class="resize-handle"></div>
+        </div>
+      </div>
+
+      <!-- PDF VIEWER WINDOW -->
+      <div class="window" data-app="pdf-viewer">
+        <div class="window-titlebar">
+          <div class="traffic">
+            <button class="t-close" data-close title="Close"></button>
+            <button class="t-min" data-min title="Minimize"></button>
+          </div>
+          <div class="window-title">📄 Viewer — Shourov_Resume.pdf</div>
+        </div>
+        <div class="window-body pdf-body">
+          <iframe src="resume.pdf" class="pdf-frame" title="Resume PDF"></iframe>
+          <div class="resize-handle"></div>
         </div>
       </div>
 
