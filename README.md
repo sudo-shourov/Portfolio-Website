@@ -2,11 +2,6 @@
 
 An interactive, retro-modern Desktop OS interface built for web portfolios. Features **60+ FPS GPU-accelerated window management**, responsive mobile layouts, dynamic themes, and a built-in terminal.
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=black)
-
 ---
 
 ## ✨ Features
@@ -32,8 +27,6 @@ An interactive, retro-modern Desktop OS interface built for web portfolios. Feat
 
 ## 🚀 Quick Start
 
-Since this project requires no build steps or dependencies, running it locally is instant:
-
 1. Clone the repository:
    git clone https://github.com/your-username/portfolio-os.git
    cd portfolio-os
@@ -46,8 +39,8 @@ Since this project requires no build steps or dependencies, running it locally i
 
 ## 🎨 Customization
 
-### Changing Personal Details
-Update your bio, name, links, and avatar image directly inside the about section of index.html:
+### Replacing Personal Details
+If you decide to use this template for your own portfolio, update your bio, name, links, and avatar image directly inside the about section of index.html:
 
 <div class="window" data-app="about">
   <div class="about-head">
@@ -61,15 +54,6 @@ Update your bio, name, links, and avatar image directly inside the about section
   </div>
 </div>
 
-### Adding Terminal Commands
-Extend or customize available shell commands in script.js inside the runCommand() switch block:
-
-switch(cmd) {
-  case 'custom':
-    printLine('This is a custom terminal response!');
-    break;
-}
-
 ---
 
 ## 💻 Tech Stack
@@ -80,6 +64,7 @@ switch(cmd) {
 
 ---
 
-## 📄 License
+## ⚖️ License & Intellectual Property
 
-Distributed under the MIT License. See LICENSE for more information.
+* **Codebase & Architecture**: Licensed under the **MIT License**. Feel free to use the OS windowing logic, CSS styles, and JS mechanics for your own projects.
+* **Personal Content & Identity**: **All Rights Reserved**. The personal assets, write-ups, biography, artwork, and branding content contained in this repository belong exclusively to the author and may not be republished or redistributed as your own identity.
