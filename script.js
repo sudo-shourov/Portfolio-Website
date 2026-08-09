@@ -1,5 +1,5 @@
 /* ======================================================
-   PORTFOLIO OS TEMPLATE — FULL JAVASCRIPT
+   PORTFOLIO OS TEMPLATE — COMPLETE SCRIPT.JS
    ====================================================== */
 (function(){
   'use strict';
@@ -34,7 +34,8 @@
     themeBtn.textContent = root.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
   }
 
-  var soundOn = false;
+  /* Sound enabled by default */
+  var soundOn = true;
   var soundBtn = document.getElementById('soundToggle');
   var audioCtx = null;
 
@@ -55,6 +56,9 @@
   }
 
   if (soundBtn) {
+    soundBtn.setAttribute('aria-pressed', 'true');
+    soundBtn.textContent = '🔊';
+
     soundBtn.addEventListener('click', function(){
       soundOn = !soundOn;
       soundBtn.setAttribute('aria-pressed', String(soundOn));
@@ -63,7 +67,7 @@
     });
   }
 
-  /* ---------------- window manager (fluid GPU + rAF) ---------------- */
+  /* ---------------- window manager (fluid GPU + boundary fixes) ---------------- */
   var windowsLayer = document.getElementById('windowsLayer');
   var runningTabs = document.getElementById('runningTabs');
   var desktopEl = document.getElementById('desktop');
@@ -105,8 +109,9 @@
       tab.addEventListener('click', function(){ toggleFromTaskbar(appId); });
       runningTabs.appendChild(tab);
 
+      // Default positioning safely below the 44px menubar
       var initialLeft = parseInt(el.style.left, 10) || 120;
-      var initialTop = parseInt(el.style.top, 10) || 60;
+      var initialTop = 60; // Forced top margin so menubar never covers titlebar
       el.style.left = '0px';
       el.style.top = '0px';
 
@@ -163,7 +168,7 @@
     btn.addEventListener('click', function(){ openApp(btn.getAttribute('data-app')); });
   });
 
-  /* Append resize handle element to each window */
+  /* Attach controls and resize handle */
   windowsLayer.querySelectorAll('.window').forEach(function(win){
     var appId = win.getAttribute('data-app');
     win.addEventListener('mousedown', function(){ focusApp(appId); });
@@ -227,7 +232,7 @@
         isDragging = true;
         var st = running[appId];
         startWinX = st ? st.x : 0;
-        startWinY = st ? st.y : 0;
+        startWinY = st ? st.y : 60;
         startPointerX = e.clientX;
         startPointerY = e.clientY;
 
@@ -252,7 +257,7 @@
       });
     }
 
-    /* Move handler */
+    /* Pointer move handler with menubar boundary prevention */
     function onPointerMove(e) {
       if (!isDragging && !isResizing) return;
 
@@ -264,8 +269,10 @@
         var x = startWinX + deltaX;
         var y = startWinY + deltaY;
 
+        // X boundaries
         x = Math.max(4, Math.min(x, deskRect.width - win.offsetWidth - 4));
-        y = Math.max(4, Math.min(y, deskRect.height - win.offsetHeight - 4));
+        // Y boundaries: 50px prevents titlebar from slipping behind the top menubar
+        y = Math.max(50, Math.min(y, deskRect.height - win.offsetHeight - 4));
 
         currentX = x;
         currentY = y;
@@ -449,7 +456,7 @@
     });
   }
 
-  /* Open About by default once the boot screen clears */
+  /* Open About window after boot */
   setTimeout(function(){ openApp('about'); }, isMobile() ? 300 : 2300);
 
 })();
