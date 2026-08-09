@@ -34,10 +34,16 @@
   var MIN_SCALE = 0.4;
   var MAX_SCALE = 3;
   var rendering = false;
+  var renderTask = null;
   var pendingPage = null;
   var startedLoading = false;
 
   function tick(){ if (typeof blip === 'function') blip(420, .05); }
+
+  function hideStatusOverlays() {
+    if (loadingEl) loadingEl.hidden = true;
+    if (errorEl) errorEl.hidden = true;
+  }
 
   function updateToolbar(){
     if (pageInfoEl) pageInfoEl.textContent = pageNum + ' / ' + pdfDoc.numPages;
@@ -51,18 +57,45 @@
   function renderPage(num){
     rendering = true;
     canvas.classList.add('pdf-rendering');
+
     pdfDoc.getPage(num).then(function(page){
+      var dpr = window.devicePixelRatio || 1;
       var viewport = page.getViewport({ scale: scale });
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      page.render({ canvasContext: ctx, viewport: viewport }).promise.then(function(){
+
+      // Internal high-DPI scaling
+      canvas.width = Math.floor(viewport.width * dpr);
+      canvas.height = Math.floor(viewport.height * dpr);
+
+      // Logical styling dimensions
+      canvas.style.width = Math.floor(viewport.width) + 'px';
+      canvas.style.height = Math.floor(viewport.height) + 'px';
+
+      var renderContext = {
+        canvasContext: ctx,
+        viewport: viewport,
+        transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : null
+      };
+
+      if (renderTask) {
+        renderTask.cancel();
+      }
+
+      renderTask = page.render(renderContext);
+      renderTask.promise.then(function(){
         rendering = false;
         canvas.classList.remove('pdf-rendering');
+
+        // Force overlay removal on success
+        hideStatusOverlays();
+
         if (pendingPage !== null) {
           var next = pendingPage;
           pendingPage = null;
           renderPage(next);
         }
+      }).catch(function(err){
+        if (err && err.name === 'RenderingCancelledException') return;
+        console.error('Render error:', err);
       });
     });
     updateToolbar();
@@ -97,9 +130,13 @@
   function loadPdf(){
     if (startedLoading) return;
     startedLoading = true;
+
+    if (loadingEl) loadingEl.hidden = false;
+    if (errorEl) errorEl.hidden = true;
+
     pdfjsLib.getDocument('resume.pdf').promise.then(function(doc){
       pdfDoc = doc;
-      if (loadingEl) loadingEl.hidden = true;
+      hideStatusOverlays();
       fitWidth();
       showPage(1);
     }).catch(function(err){
@@ -123,9 +160,7 @@
   if (zoomOutBtn) zoomOutBtn.addEventListener('click', function(){ setZoom(scale - 0.15); tick(); });
   if (fitBtn) fitBtn.addEventListener('click', fitWidth);
 
-  /* Keyboard shortcuts — only act while the PDF viewer window is
-     the focused/active app, so they don't hijack typing elsewhere
-     (e.g. the terminal). */
+  /* Keyboard shortcuts */
   document.addEventListener('keydown', function(e){
     var st = window.running && window.running['pdf-viewer'];
     if (!st || !st.tabEl || !st.tabEl.classList.contains('active')) return;
@@ -135,9 +170,7 @@
     else if (e.key === '-' || e.key === '_') { setZoom(scale - 0.15); tick(); }
   });
 
-  /* Load the PDF the first time the window is actually opened
-     (via the desktop icon, the About window button, or 'resume'
-     in the terminal) rather than on page load. */
+  /* Open triggering */
   if (viewerWin) {
     var observer = new MutationObserver(function(){
       if (viewerWin.classList.contains('open')) loadPdf();

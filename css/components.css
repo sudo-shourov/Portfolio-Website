@@ -94,6 +94,9 @@
 
 .pdf-toolbar-spacer { flex: 1; }
 
+.pdf-status[hidden] {
+  display: none !important;
+}
 .pdf-btn {
   display: inline-flex;
   align-items: center;
